@@ -51,8 +51,8 @@ class SQLDATA():
     def get_info(self, begin, end):
         """
 
-        :param begin: naive string datetime
-        :param end: naive string datetime
+        :param begin: naive string datetime, assumed local time
+        :param end: naive string datetime, assumed local time
         :return: dictionary {'Table name': result_dict} of result dictionaries {'dat_range':, 'time':, 'mean_time':,
          'temp':, 'mean_temp':, 'sd_temp':}
         """
@@ -64,8 +64,6 @@ class SQLDATA():
         # wd = os.getcwd()  # get working directory
         db_path = os.path.join(self.wd, selected_db)
         file_exists = os.path.exists(db_path)  # check it exists to avoid creating a blank
-        # set up dictionaries
-        ref, sball, ref_temp, ah1, gr_in, gr_out, perm = {}, {}, {}, {},{}, {}, {}
         if file_exists:
             conn = sqlite3.connect(selected_db)  # note the risk it will create one if it can't be found
             cursor = conn.cursor()
@@ -101,6 +99,13 @@ class SQLDATA():
                     table_dict[table[0]]['mean_time'] = mean_time
                     table_dict[table[0]]['mean_temp'] = mean_temp
                     table_dict[table[0]]['sd_temp'] = stdev_temp
+                    # convenience for pasting data
+                    print(table)
+                    print(self.t.decimal_year_to_datetime(mean_time))
+                    print(mean_time)
+                    print(mean_temp)
+                    print(stdev_temp)
+                    print()
 
         else:
             print('File error in SQLDATA, probably misnamed')
@@ -215,30 +220,45 @@ if __name__ == '__main__':
     #
     # work through the historical data bases
 
-    date_tuples_1 = [('15 November, 2019, 9:00 AM', '15 November, 2019, 4:00 PM'),
-                   ('22 December, 2020, 9:00 AM', '22 December, 2020, 4:00 PM')]
-    sql = SQLDATA('LoggerData\cap_environment_August_2019_on.db')
-    for x in date_tuples_1:
-        output_dict = sql.get_info(x[0], x[1])
-        sql.plot_all(output_dict)
+    # date_tuples_1 = [('15 November, 2019, 9:00 AM', '15 November, 2019, 4:00 PM'),
+    #                ('22 December, 2020, 9:00 AM', '22 December, 2020, 4:00 PM')]
+    # sql = SQLDATA('LoggerData\cap_environment_August_2019_on.db')
+    # for x in date_tuples_1:
+    #     output_dict = sql.get_info(x[0], x[1])
+    #     sql.plot_all(output_dict)
 
 
-    date_tuples_2 = [('3 September, 2021, 9:00 AM', '3 September, 2021, 4:00 PM'),
-                   ('9 September, 2021, 9:00 AM', '9 September, 2021, 4:00 PM'),
-                   ('9 September, 2021, 9:00 AM', '9 September, 2021, 4:00 PM'),
-                   ('10 September, 2021, 9:00 AM', '10 September, 2021, 4:00 PM'),
-                   ('21 September, 2021, 9:00 AM', '21 September, 2021, 4:00 PM'),
-                   ('11 October, 2021, 9:00 AM', '11 October, 2021, 4:00 PM')]
+    # date_tuples_2 = [('3 September, 2021, 9:00 AM', '3 September, 2021, 4:00 PM'),
+    #                ('9 September, 2021, 9:00 AM', '9 September, 2021, 4:00 PM'),
+    #                ('9 September, 2021, 9:00 AM', '9 September, 2021, 4:00 PM'),
+    #                ('10 September, 2021, 9:00 AM', '10 September, 2021, 4:00 PM'),
+    #                ('21 September, 2021, 9:00 AM', '21 September, 2021, 4:00 PM'),
+    #                ('11 October, 2021, 9:00 AM', '11 October, 2021, 4:00 PM')]
+    date_tuples_2 = [('7 April, 2022, 9:00 AM', '7 April, 2022, 4:00 PM')]
     sql = SQLDATA('LoggerData\cap_environment_September_2021_on.db')
     for x in date_tuples_2:
         output_dict = sql.get_info(x[0], x[1])
         sql.plot_all(output_dict)
 
-    date_tuples_3 = [('3 July, 2025, 9:00 AM', '3 July, 2025, 4:00 PM'),
-                   ('4 July, 2025, 9:00 AM', '4 July, 2025, 4:00 PM'),
-                   ('7 July, 2025, 9:00 AM', '7 July, 2025, 4:00 PM'),
-                   ('8 July, 2025, 9:00 AM', '8 July, 2025, 4:00 PM')]
-    sql = SQLDATA('LoggerData\cap_environment_May_2022_on.db')
-    for x in date_tuples_3:
+    # date_tuples_3 = [('3 July, 2025, 9:00 AM', '3 July, 2025, 4:00 PM'),
+    #                ('4 July, 2025, 9:00 AM', '4 July, 2025, 4:00 PM'),
+    #                ('7 July, 2025, 9:00 AM', '7 July, 2025, 4:00 PM'),
+    #                ('8 July, 2025, 9:00 AM', '8 July, 2025, 4:00 PM')]
+    # sql = SQLDATA('LoggerData\cap_environment_May_2022_on.db')
+    # for x in date_tuples_3:
+    #     output_dict = sql.get_info(x[0], x[1])
+    #     sql.plot_all(output_dict)
+
+    date_tuples_4 = [('11 July, 2025, 9:00 AM', '11 July, 2025, 4:00 PM'),
+                     ('23 October, 2025, 9:00 AM', '23 October, 2025, 4:00 PM'),
+                     ('28 October, 2025, 9:00 AM', '28 October, 2025, 4:00 PM'),
+                     ('3 November, 2025, 9:00 AM', '3 November, 2025, 4:00 PM'),
+                     ('6 November, 2025, 9:00 AM', '6 November, 2025, 4:00 PM'),
+                     ('21 November, 2025, 9:00 AM', '21 November, 2025, 4:00 PM'),
+                     ('1 December, 2025, 9:00 AM', '1 December, 2025, 4:00 PM'),
+                     ('5 December, 2025, 9:00 AM', '5 December, 2025, 4:00 PM')
+                     ]
+    sql = SQLDATA('LoggerData\cap_environment_May_2022_05_Dec_2025.db')
+    for x in date_tuples_4:
         output_dict = sql.get_info(x[0], x[1])
         sql.plot_all(output_dict)

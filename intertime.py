@@ -91,6 +91,19 @@ class INTERTIME():
         utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
         return utc_dt
 
+    def local_to_sql_UTC(self, local):
+        """
+
+        :param local: date string, not yet a datetime object
+        :return: string in UTC
+        """
+        b = parser.parse(local)  # convert to a datetime
+        c = self.local_to_UTC(b)  # convert to a UTC datetime
+        d = c.replace(tzinfo=None)  # remove timezone
+        e = d.strftime("%Y-%m-%d %H:%M:%S")
+        return e
+
+
 if __name__ == '__main__':
     t = INTERTIME('Pacific/Auckland')
     # check daylight saving aware between 2:00 and 3:00 am when the clock changes
@@ -149,4 +162,18 @@ if __name__ == '__main__':
     summer_date = t.sec_to_date(summer_sec)
     summer_utc = t.local_to_UTC(summer_date)
     print('summer_utc =', summer_utc)
+
+    # for pressure, we need UTC from local time
+    a = '28 September, 2025, 3:00 AM'  # my format for selecting local time
+    print('a =', a)
+    b = parser.parse(a)  # convert to a datetime
+    print('b =', b)
+    c = t.local_to_UTC(b)  # convert to a UTC datetime
+    print('c =', c)
+    d = c.replace(tzinfo=None)  # remove timezone
+    print('d =', d)  # hopefully a UTC compatible with the SQLite time stamp
+    print(type(d))  # might need to make it a string for SQLite?
+    dd = t.local_to_sql_UTC(a)
+    print('dd =', dd)
+    print(type(dd))
 
